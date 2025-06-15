@@ -44,22 +44,22 @@ for script in script_tags:
                 # Parse with json5 to handle JS-like syntax
                 the_data = json5.loads(js_obj)
                 company_name = the_data.get("attributes", {}).get("companyName")
-                print("Company Name:\n" + company_name + "\n")
+                print(f"Company Name:\n{company_name}\n")
 
                 role = the_data.get("attributes", {}).get("jobSubType")
-                print("Role:\n" + role + "\n")
+                print(f"Role:\n{role}\n")
 
                 job_position = the_data.get("attributes", {}).get("jobPosition")
-                print("jobPosition:\n" + job_position + "\n")
+                print(f"jobPosition:\n{job_position}\n")
 
                 job_id = the_data.get("attributes", {}).get("jobId")
                 print(f"jobId:\n{job_id}\n")
 
                 payment_type = the_data.get("attributes", {}).get("paymentType")
-                print("paymentType:\n" + payment_type + "\n")     
+                print(f"paymentType:\n{payment_type}\n")     
 
                 work_from = the_data.get("attributes", {}).get("workFrom")
-                print("workFrom:\n" + work_from + "\n")          
+                print(f"workFrom:\n{work_from}\n")          
 
                 quality_score = the_data.get("attributes", {}).get("qualityScore")
                 print(f"qualityScore:\n{quality_score}\n")     
