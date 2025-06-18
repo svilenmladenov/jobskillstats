@@ -137,6 +137,12 @@ try:
         print("City:", city_text)
         print("Work type:", hybrid_text)
 
+        hrcompany_span = soup.find('span', class_='company-name')
+        hrcompany_name = hrcompany_span.get_text(strip=True) if hrcompany_span else None
+        print("HR Agency: ")
+        print(hrcompany_name)
+        print()
+
         if tech_stack_section:
             badges_clickable = tech_stack_section.find_all('div', class_='component-square-badge has-image clickable')
             badges_non_clickable = tech_stack_section.find_all('div', class_='component-square-badge has-image')
@@ -151,12 +157,12 @@ try:
             for skill in skills:
                 print(f"- {skill}")
 
-    # Insert query
-    insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_query, (job_url, date.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, datetime.today() ))
+        # Insert query
+        insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, hrcompany_name, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(insert_query, (job_url, date.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
 
-    # Commit changes
-    conn.commit()
+        # Commit changes
+        conn.commit()
 
     print(f"Inserted with ID: {cursor.lastrowid}")
 

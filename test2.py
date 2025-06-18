@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json5
 import re
 
-job_url = "https://dev.bg/company/jobads/yettel-devops-senior-engineer/"
+job_url = "https://dev.bg/company/jobads/bulwork-azure-infrastructure-engineer/"
 skills_all = []
 
 print("", end="", flush=True)
@@ -26,6 +26,9 @@ location = soup.find('div', class_='job-card-badge location')
 
 # Get only the visible text, strip whitespace
 location = location.get_text(strip=True)
+
+hrcompany_span = soup.find('span', class_='company-name')
+hrcompany_name = hrcompany_span.get_text(strip=True) if hrcompany_span else None
 
 # Find the script section
 # Find all <script> tags
@@ -81,6 +84,10 @@ print()
 
 print("Location: ")
 print(location)
+print()
+
+print("HR Agency: ")
+print(hrcompany_name)
 print()
 
 
