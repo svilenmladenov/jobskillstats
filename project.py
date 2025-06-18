@@ -139,6 +139,10 @@ try:
 
         hrcompany_span = soup.find('span', class_='company-name')
         hrcompany_name = hrcompany_span.get_text(strip=True) if hrcompany_span else None
+
+        if company_name:  # True if company_name is not None or empty
+            hrcompany_name = None
+
         print("HR Agency: ")
         print(hrcompany_name)
         print()

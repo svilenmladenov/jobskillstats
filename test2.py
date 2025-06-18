@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json5
 import re
 
-job_url = "https://dev.bg/company/jobads/bulwork-azure-infrastructure-engineer/"
+job_url = "https://dev.bg/company/jobads/adastra-azure-administrator/"
 skills_all = []
 
 print("", end="", flush=True)
@@ -85,6 +85,9 @@ print()
 print("Location: ")
 print(location)
 print()
+
+if company_name:  # True if company_name is not None or empty
+    hrcompany_name = None
 
 print("HR Agency: ")
 print(hrcompany_name)
