@@ -161,14 +161,23 @@ try:
             for skill in skills:
                 print(f"- {skill}")
 
-        # Insert query
-        insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, hrcompany_name, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(insert_query, (job_url, date.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
+        # Select check if job already exists
+        select_query = "SELECT id FROM project.jobs where link=%s and date_posted=%s and jobid=%s"
+        cursor.execute(select_query, (job_url, date.find('time')['datetime'], job_id))
+        result = cursor.fetchone()
 
-        # Commit changes
-        conn.commit()
-
-    print(f"Inserted with ID: {cursor.lastrowid}")
+        if not result:
+            # Insert query
+            insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, hrcompany_name, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(insert_query, (job_url, date.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
+            # Commit changes
+            conn.commit()
+            print(f"Inserted with ID: {cursor.lastrowid}")
+        else:
+            update_query = "UPDATE jobs SET last_seen=%s WHERE link=%s and date_posted=%s and jobid=%s"
+            cursor.execute(update_query, (datetime.today(), job_url, date.find('time')['datetime'], job_id))
+            conn.commit()
+            print(f"Updated row with jobID: {job_id}")            
 
 except mysql.connector.Error as err:
     print(f"Error: {err}")
