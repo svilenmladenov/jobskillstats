@@ -17,6 +17,7 @@ db_config = {
 base_url = 'https://dev.bg/company/jobs/devops/?_paged='
 page = 1
 job_urls = set()  # Use a set to avoid duplicates
+jobs_total = 0
 
 try:
     # Connect to database
@@ -177,7 +178,17 @@ try:
             update_query = "UPDATE jobs SET last_seen=%s WHERE link=%s and date_posted=%s and jobid=%s"
             cursor.execute(update_query, (datetime.today(), job_url, date.find('time')['datetime'], job_id))
             conn.commit()
-            print(f"Updated row with jobID: {job_id}")            
+            print(f"Updated row with jobID: {job_id}")
+
+        jobs_total = jobs_total + 1
+
+    # Insert query
+    insert_query_totaljobs = "INSERT INTO jobs_total (date, jobs_total, role) VALUES (%s, %s, %s)"
+    cursor.execute(insert_query_totaljobs, (datetime.today(), jobs_total, role))
+    # Commit changes
+    conn.commit()
+
+    print(f"Total Jobs: {jobs_total}")
 
 except mysql.connector.Error as err:
     print(f"Error: {err}")
