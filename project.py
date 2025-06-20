@@ -4,6 +4,7 @@ import json5
 import re
 import mysql.connector
 from datetime import datetime
+from datetime import date
 
 # Database connection config
 db_config = {
@@ -73,7 +74,7 @@ try:
         tech_stack_section = soup.find('div', class_='tech-stack')
 
         # Find the date-posted section
-        date = soup.find('li', class_='date-posted')
+        datejob = soup.find('li', class_='date-posted')
 
         # Find the location section
         location_section = soup.find('div', class_='tags-wrap')
@@ -132,7 +133,7 @@ try:
         print()
 
         print("Date: ")
-        print(date.find('time')['datetime'])
+        print(datejob.find('time')['datetime'])
         print()
 
         print("City:", city_text)
@@ -164,29 +165,41 @@ try:
 
         # Select check if job already exists
         select_query = "SELECT id FROM project.jobs where link=%s and date_posted=%s and jobid=%s"
-        cursor.execute(select_query, (job_url, date.find('time')['datetime'], job_id))
+        cursor.execute(select_query, (job_url, datejob.find('time')['datetime'], job_id))
         result = cursor.fetchone()
 
         if not result:
             # Insert query
             insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, hrcompany_name, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(insert_query, (job_url, date.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
+            cursor.execute(insert_query, (job_url, datejob.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
             # Commit changes
             conn.commit()
             print(f"Inserted with ID: {cursor.lastrowid}")
         else:
             update_query = "UPDATE jobs SET last_seen=%s WHERE link=%s and date_posted=%s and jobid=%s"
-            cursor.execute(update_query, (datetime.today(), job_url, date.find('time')['datetime'], job_id))
+            cursor.execute(update_query, (datetime.today(), job_url, datejob.find('time')['datetime'], job_id))
             conn.commit()
             print(f"Updated row with jobID: {job_id}")
 
         jobs_total = jobs_total + 1
 
-    # Insert query
-    insert_query_totaljobs = "INSERT INTO jobs_total (date, jobs_total, role) VALUES (%s, %s, %s)"
-    cursor.execute(insert_query_totaljobs, (datetime.today(), jobs_total, role))
-    # Commit changes
-    conn.commit()
+    # Select check if job total for that date already exists
+    select_query_totaljobs = "SELECT id FROM jobs_total where date=%s and role=%s"
+    cursor.execute(select_query_totaljobs, (date.today(), role))
+    resultj = cursor.fetchone()
+    # print(result, datejob.today())
+
+    if not resultj:
+        # Insert query
+        insert_query_totaljobs = "INSERT INTO jobs_total (date, jobs_total, role) VALUES (%s, %s, %s)"
+        cursor.execute(insert_query_totaljobs, (datetime.today(), jobs_total, role))
+        # Commit changes
+        conn.commit()
+    else:
+        update_query_totaljobs = "UPDATE jobs_total SET jobs_total=%s WHERE date = %s and role = %s;"
+        cursor.execute(update_query_totaljobs, (jobs_total, datetime.today(), role))
+        conn.commit()
+
 
     print(f"Total Jobs: {jobs_total}")
 
