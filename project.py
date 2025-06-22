@@ -53,9 +53,8 @@ try:
 
 
     # Print all unique job ad URLs
-    # print("\nExtracted Job Ad URLs:")
     for job_url in sorted(job_urls):
-        print(".", end="", flush=True)
+        print(f"\n\n------------\n")
 
         # Initialize an empty list
         skills_all = []
@@ -88,7 +87,6 @@ try:
         hybrid_text = hybrid.get_text(strip=True) if hybrid else None
 
         # Find the script section
-        # Find all <script> tags
         script_tags = soup.find_all("script")
 
         # Search for the one that contains 'the_data'
@@ -104,40 +102,34 @@ try:
                         # Parse with json5 to handle JS-like syntax
                         the_data = json5.loads(js_obj)
                         company_name = the_data.get("attributes", {}).get("companyName")
-                        print(f"Company Name:\n{company_name}\n")
+                        print(f"Company Name: {company_name}")
 
                         role = the_data.get("attributes", {}).get("jobSubType")
-                        print(f"Role:\n{role}\n")
+                        print(f"Role: {role}")
 
                         job_position = the_data.get("attributes", {}).get("jobPosition")
-                        print(f"jobPosition:\n{job_position}\n")
+                        print(f"jobPosition: {job_position}")
 
                         job_id = the_data.get("attributes", {}).get("jobId")
-                        print(f"jobId:\n{job_id}\n")
+                        print(f"jobId: {job_id}")
 
                         payment_type = the_data.get("attributes", {}).get("paymentType")
-                        print(f"paymentType:\n{payment_type}\n")            
+                        print(f"paymentType: {payment_type}")            
 
                         quality_score = the_data.get("attributes", {}).get("qualityScore")
-                        print(f"qualityScore:\n{quality_score}\n")     
+                        print(f"qualityScore: {quality_score}")     
 
                         value = the_data.get("attributes", {}).get("value")
-                        print(f"value:\n{value}\n")  
+                        print(f"value: {value}")  
                     except Exception as e:
                         print("Failed to parse the_data:", e)
                 break
 
         
-        print("URL: ")
-        print(job_url)
-        print()
-
-        print("Date: ")
-        print(datejob.find('time')['datetime'])
-        print()
-
-        print("City:", city_text)
-        print("Work type:", hybrid_text)
+        print(f"URL: {job_url}")
+        print("Date: ", datejob.find('time')['datetime'])
+        print(f"City: {city_text}")
+        print(f"Work type:  {hybrid_text}")
 
         hrcompany_span = soup.find('span', class_='company-name')
         hrcompany_name = hrcompany_span.get_text(strip=True) if hrcompany_span else None
@@ -145,9 +137,7 @@ try:
         if company_name:  # True if company_name is not None or empty
             hrcompany_name = None
 
-        print("HR Agency: ")
-        print(hrcompany_name)
-        print()
+        print(f"HR Agency: {hrcompany_name}")
 
         if tech_stack_section:
             badges_clickable = tech_stack_section.find_all('div', class_='component-square-badge has-image clickable')
@@ -187,7 +177,6 @@ try:
     select_query_totaljobs = "SELECT id FROM jobs_total where date=%s and role=%s"
     cursor.execute(select_query_totaljobs, (date.today(), role))
     resultj = cursor.fetchone()
-    # print(result, datejob.today())
 
     if not resultj:
         # Insert query
@@ -201,7 +190,7 @@ try:
         conn.commit()
 
 
-    print(f"Total Jobs: {jobs_total}")
+    print(f"\n\n---------\nTotal Jobs: {jobs_total}")
 
 except mysql.connector.Error as err:
     print(f"Error: {err}")
