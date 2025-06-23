@@ -148,12 +148,16 @@ try:
             skills = [badge.find('img').get('title') for badge in badges if badge.find('img')]
             skills_all = skills_all + skills
 
+            select_query_skills = "SELECT count(id) FROM project.skills where jobid=%s"
+            cursor.execute(select_query_skills, (job_id,))
+            results = cursor.fetchone()
 
             print("Skills:")
             for skill in skills:
                 print(f"- {skill}")
-                insert_query = "INSERT INTO skills (skill, jobid) VALUES (%s, %s)"
-                cursor.execute(insert_query, (skill, job_id))
+                if not results:
+                    insert_query_skills = "INSERT INTO skills (skill, jobid) VALUES (%s, %s)"
+                    cursor.execute(insert_query_skills, (skill, job_id))
             conn.commit()
 
         # Select check if job already exists
