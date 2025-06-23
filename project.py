@@ -152,6 +152,9 @@ try:
             print("Skills:")
             for skill in skills:
                 print(f"- {skill}")
+                insert_query = "INSERT INTO skills (skill, jobid) VALUES (%s, %s)"
+                cursor.execute(insert_query, (skill, job_id))
+                conn.commit()
 
         # Select check if job already exists
         select_query = "SELECT id FROM project.jobs where link=%s and date_posted=%s and jobid=%s"
