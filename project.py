@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json5
 import re
 import mysql.connector
-from datetime import datetime
+# from datetime import datetime
 from datetime import date
 
 # Database connection config
@@ -168,13 +168,13 @@ try:
         if not result:
             # Insert query
             insert_query = "INSERT INTO jobs (link, date_posted, company_name, role, job_position, jobid, payment_type, quality_score, value, city, work_type, hrcompany_name, last_seen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(insert_query, (job_url, datejob.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, datetime.today() ))
+            cursor.execute(insert_query, (job_url, datejob.find('time')['datetime'], company_name, role, job_position, job_id, payment_type, quality_score, value, city_text, hybrid_text, hrcompany_name, date.today() ))
             # Commit changes
             conn.commit()
             print(f"Inserted with ID: {cursor.lastrowid}")
         else:
             update_query = "UPDATE jobs SET last_seen=%s WHERE link=%s and date_posted=%s and jobid=%s"
-            cursor.execute(update_query, (datetime.today(), job_url, datejob.find('time')['datetime'], job_id))
+            cursor.execute(update_query, (date.today(), job_url, datejob.find('time')['datetime'], job_id))
             conn.commit()
             print(f"Updated row with jobID: {job_id}")
 
@@ -188,12 +188,12 @@ try:
     if not resultj:
         # Insert query
         insert_query_totaljobs = "INSERT INTO jobs_total (date, jobs_total, role) VALUES (%s, %s, %s)"
-        cursor.execute(insert_query_totaljobs, (datetime.today(), jobs_total, role))
+        cursor.execute(insert_query_totaljobs, (date.today(), jobs_total, role))
         # Commit changes
         conn.commit()
     else:
         update_query_totaljobs = "UPDATE jobs_total SET jobs_total=%s WHERE date = %s and role = %s;"
-        cursor.execute(update_query_totaljobs, (jobs_total, datetime.today(), role))
+        cursor.execute(update_query_totaljobs, (jobs_total, date.today(), role))
         conn.commit()
 
 
