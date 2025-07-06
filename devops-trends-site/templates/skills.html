@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Топ 20 търсени умения</h2>
+<canvas id="skillsChart" width="600" height="300"></canvas>
+<script>
+    const ctx = document.getElementById('skillsChart').getContext('2d');
+    const skillsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels | tojson }},
+            datasets: [{
+                label: 'Търсене',
+                data: {{ values | tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            scales: {
+                x: { title: { display: true, text: 'Брой' }},
+                y: { title: { display: true, text: 'Умения' }}
+            }
+        }
+    });
+</script>
+{% endblock %}

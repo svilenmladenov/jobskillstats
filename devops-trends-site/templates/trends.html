@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Обяви за работа по дати (последни 30 дни)</h2>
+<canvas id="trendChart" width="600" height="300"></canvas>
+<script>
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels | tojson }},
+            datasets: [{
+                label: 'Брой обяви',
+                data: {{ values | tojson }},
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.2,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: 'Дата' }},
+                y: { title: { display: true, text: 'Обяви' }}
+            }
+        }
+    });
+</script>
+{% endblock %}
