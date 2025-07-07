@@ -46,7 +46,7 @@ def skills():
     query = """
         SELECT skill, COUNT(*) AS total 
         FROM project.skills 
-        WHERE jobid in (SELECT jobid FROM project.jobs WHERE last_seen = CURDATE() - INTERVAL 1 DAY)
+        WHERE jobid in (SELECT jobid FROM project.jobs WHERE last_seen = CURDATE())
         GROUP BY skill 
         ORDER BY total DESC 
         LIMIT 20
