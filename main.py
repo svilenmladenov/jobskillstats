@@ -17,12 +17,12 @@ try:
     # Connect to database
     conn = mysql.connector.connect( 
         host=os.getenv("DB_HOST"), 
-        port=os.getenv("DB_PORT"), 
+        port=int(os.getenv("DB_PORT")), 
         user=os.getenv("DB_USER"), 
         password=os.getenv("DB_PASSWORD"), 
         database=os.getenv("DB_NAME") 
     )
-    cursor = conn.cursor()
+    cursor = conn.cursor(buffered=True)
 
     while True:
         url = f"{base_url}{page}"
@@ -147,7 +147,7 @@ try:
             skills = [badge.find('img').get('title') for badge in badges if badge.find('img')]
             skills_all = skills_all + skills
 
-            select_query_skills = "SELECT count(id) FROM project.skills where jobid=%s"
+            select_query_skills = "SELECT count(id) FROM skills where jobid=%s"
             cursor.execute(select_query_skills, (job_id,))
             results = cursor.fetchone()
 
@@ -160,7 +160,7 @@ try:
             conn.commit()
 
         # Select check if job already exists
-        select_query = "SELECT id FROM project.jobs where link=%s and date_posted=%s and jobid=%s"
+        select_query = "SELECT id FROM jobs where link=%s and date_posted=%s and jobid=%s"
         cursor.execute(select_query, (job_url, datejob.find('time')['datetime'], job_id))
         result = cursor.fetchone()
 
