@@ -154,7 +154,7 @@ try:
             print("Skills:")
             for skill in skills:
                 print(f"- {skill}")
-                if not results:
+                if results[0] == 0:
                     insert_query_skills = "INSERT INTO skills (skill, jobid) VALUES (%s, %s)"
                     cursor.execute(insert_query_skills, (skill, job_id))
             conn.commit()
