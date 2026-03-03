@@ -26,7 +26,7 @@ def trends():
         return redirect(url_for('login'))
 
     conn = get_db_connection()
-    query = "SELECT * FROM project.jobs_total WHERE date > CURDATE() - INTERVAL 30 DAY"
+    query = "SELECT * FROM jobs_total WHERE date > CURDATE() - INTERVAL 30 DAY"
     df = pd.read_sql(query, conn)
     conn.close()
     df['date'] = pd.to_datetime(df['date']).dt.strftime('%Y-%m-%d')
@@ -45,8 +45,8 @@ def skills():
     conn = get_db_connection()
     query = """
         SELECT skill, COUNT(*) AS total 
-        FROM project.skills 
-        WHERE jobid in (SELECT jobid FROM project.jobs WHERE last_seen = CURDATE())
+        FROM skills 
+        WHERE jobid in (SELECT jobid FROM jobs WHERE last_seen = CURDATE())
         GROUP BY skill 
         ORDER BY total DESC 
         LIMIT 20
